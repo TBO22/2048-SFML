@@ -5,14 +5,14 @@
 #include <iomanip>
 #include <ctime>
 #include <cstdlib>
+#include <fstream>
 #include <vector>
 #include<string>
 #include <filesystem>
-#include <sstream>
-#include <SFML/Audio.hpp>
+#include<sstream>
 using namespace std;
 
-const int SIZE = 6;
+const int SIZE = 4;
 const int TILE_SIZE = 100;
 const int GRID_OFFSET_X = 100;
 const int GRID_OFFSET_Y = 100;
@@ -213,7 +213,7 @@ public:
             }
         }
         int randomIndex = rand() % emptyTiles.size();
-        int value = (rand() % 2 + 2) * 2;  // Either 2 or 4
+        int value = (rand() % 2 + 1) * 2;  // Either 2 or 4
         setValue(emptyTiles[randomIndex].first, emptyTiles[randomIndex].second, value);
         return true;
     }
@@ -236,10 +236,10 @@ public:
         gradient[2].position = sf::Vector2f(window.getSize().x, window.getSize().y);
         gradient[3].position = sf::Vector2f(0, window.getSize().y);
 
-        gradient[0].color = sf::Color(115, 192, 223);  // Pinkish
-        gradient[1].color = sf::Color(120, 0, 12);    // Purplish
-        gradient[2].color = sf::Color(0, 191, 155);     // Blueish
-        gradient[3].color = sf::Color(115, 125, 100);   // Pinkish
+        gradient[0].color = sf::Color(255, 192, 203);  // Pinkish
+        gradient[1].color = sf::Color(128, 0, 128);    // Purplish
+        gradient[2].color = sf::Color(0, 191, 255);     // Blueish
+        gradient[3].color = sf::Color(255, 105, 180);   // Pinkish
 
         window.draw(gradient);
 
@@ -247,10 +247,10 @@ public:
             for (int k = 0; k < size_; k++) {
                 sf::RectangleShape tile(sf::Vector2f(TILE_SIZE, TILE_SIZE));
                 if (board_[i][k].getValue() == 0) {
-                    tile.setFillColor(sf::Color(155, 192, 203)); // Pinkish
+                    tile.setFillColor(sf::Color(255, 192, 203)); // Pinkish
                 }
                 else {
-                    tile.setFillColor(sf::Color(105, 105, 100));   // Purplish
+                    tile.setFillColor(sf::Color(255, 255, 0));   // Purplish
                 }
                 tile.setOutlineColor(sf::Color::Black);
                 tile.setOutlineThickness(2);
@@ -469,6 +469,7 @@ void displayAboutInfo(sf::RenderWindow& window, const sf::Font& font) {
                 }
             }
         }
+
         window.clear(sf::Color::White); // Clear the window with white color
         window.draw(backgroundSprite); // Draw the background image
         window.draw(aboutText); // Draw the text
@@ -500,14 +501,7 @@ int main() {
 
     bool isGameStarted = false; // Track if the game has started
     board.initializeBoard();
-    // Load the sound buffer and set up the sound object
-    sf::SoundBuffer buffer;
-    if (!buffer.loadFromFile("laila.mp3")) { // Adjust the file path accordingly
-        cerr << "Failed to load sound effect!" << endl;
-        return EXIT_FAILURE;
-    }
-    sf::Sound sound;
-    sound.setBuffer(buffer);
+
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -528,7 +522,7 @@ int main() {
                     displayAboutInfo(window, Board::defaultFont);
                 }
 
-            }//agar mam bole ke keyboard keys change kro jis se control krte movements
+            }
             else { // Game is started, handle game events
                 if (event.type == sf::Event::KeyPressed) {
                     bool successfulMove = false;
@@ -553,7 +547,6 @@ int main() {
                     if (successfulMove) {
                         board.addNewTile();
                         score += board.getScore();
-                        sound.play();
                     }
                 }
             }
@@ -611,6 +604,5 @@ int main() {
     }
     return 0;
 }
-
 
 
